@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const productController_1 = require("../controllers/productController");
+const auth_1 = require("../middleware/auth");
+const validate_1 = require("../middleware/validate");
+const router = (0, express_1.Router)();
+router.use(auth_1.authenticateToken);
+router.get('/', productController_1.getProducts);
+router.get('/movements/log', productController_1.getStockMovements);
+router.get('/:id', productController_1.getProductById);
+router.post('/', (0, auth_1.requireRole)(['ADMIN', 'WAREHOUSE']), (0, validate_1.validateBody)(productController_1.productSchema), productController_1.createProduct);
+router.put('/:id', (0, auth_1.requireRole)(['ADMIN', 'WAREHOUSE']), (0, validate_1.validateBody)(productController_1.productSchema), productController_1.updateProduct);
+router.post('/:id/stock-movement', (0, auth_1.requireRole)(['ADMIN', 'WAREHOUSE']), (0, validate_1.validateBody)(productController_1.stockMovementSchema), productController_1.addStockMovement);
+exports.default = router;
